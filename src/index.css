@@ -11,3 +11,32 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.central {
+  padding-top: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  margin-right: 32px;
+  background-color: blueviolet;
+  color: white;
+  padding: 12px;
+  border-radius: 12px;
+  border: 0px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.show__char {
+  text-transform: capitalize;
+  padding: 12px;
+  background-color: blueviolet;
+  color: white;
+  font-weight: 600;
+  font-size: 20px;
+  border-radius: 9999px;
+  cursor: pointer;
+}
