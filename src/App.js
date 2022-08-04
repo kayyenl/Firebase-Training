@@ -1,13 +1,24 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { auth } from './firebase/init';
 import { 
   createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, signOut } from "firebase/auth";
+  signInWithEmailAndPassword, signOut,
+  onAuthStateChanged } from "firebase/auth";
 
 function App() {
   const [user, setUser] = useState("")
+
+  React.useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log(user)
+      if (user) {
+        setUser(user)
+      }
+    })
+  }, [])
+
   function register() {
     console.log('register')
     createUserWithEmailAndPassword(auth, 'bob@cheese.com', 'cheesewheel')
