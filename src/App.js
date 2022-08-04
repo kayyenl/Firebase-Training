@@ -1,31 +1,43 @@
+import React, {useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { auth } from './firebase/init';
 import { 
   createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword } from "firebase/auth";
+  signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 function App() {
+  const [user, setUser] = useState("")
   function register() {
     console.log('register')
     createUserWithEmailAndPassword(auth, 'bob@cheese.com', 'cheesewheel')
-      .then((user) => {
-        console.log(user, 'yes')
+      .then(({ user }) => {
+        console.log(user)
       })
       .catch((error) => {
-        console.log(error, 'no')
+        console.log(error.message)
       })
   }
 
   function login() {
     console.log('login')
     signInWithEmailAndPassword(auth, 'bob@cheese.com', 'cheesewheel')
-      .then((user) => {
-        console.log(user, 'yes')
+      .then(({ user }) => {
+        console.log(user)
+        setUser(user)
       })
       .catch((error) => {
-        console.log(error, 'no')
+        console.log(error.message)
       })
+  }
+
+  function logout() {
+    signOut(auth).then(() => {
+      console.log('signout success!')
+    }).catch(() => {
+      console.log('signout failure...')
+    })
+    setUser("")
   }
   return (
     <div className="App">
@@ -35,6 +47,11 @@ function App() {
       <button onClick={() => login()}>
         Login
       </button>
+      <button onClick={() => logout()}>
+        Logout
+      </button>
+      <br />
+      <h1>{user.email}</h1>
     </div>
   );
 }
