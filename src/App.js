@@ -9,9 +9,11 @@ import {
 
 function App() {
   const [user, setUser] = useState("")
+  const [load, setLoad] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => { //is actually called many times when re-rendering happens, so its not exactly one time only
     onAuthStateChanged(auth, (user) => {
+      setLoad(false)
       console.log(user)
       if (user) {
         setUser(user)
@@ -62,7 +64,7 @@ function App() {
         Logout
       </button>
       <br />
-      <h1>{user.email}</h1>
+      <h1>{load ? 'loading...' : user.email}</h1>
     </div>
   );
 }
