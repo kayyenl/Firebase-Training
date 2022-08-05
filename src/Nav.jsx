@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ReactDOM } from "react-dom/client";
-import { auth } from './firebase/init';
+import { auth, db } from './firebase/init';
+import { collection, addDoc } from 'firebase/firestore';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, signOut,
@@ -11,6 +12,14 @@ const Nav = () => {
     const [load, setLoad] = useState(true)
     const [firstChar, setFirstChar] = useState("")
     const [user, setUser] = useState("");
+
+    function createPost() {
+        const post = {
+            title: "How millenials are getting jobs",
+            description: "Cue the entrance of the brand new 21st centry workforce!"
+        };
+        addDoc(collection(db, 'posts'), post)
+    }
 
     useEffect(() => { //is actually called many times when re-rendering happens, so its not exactly one time only
         onAuthStateChanged(auth, (user) => {
