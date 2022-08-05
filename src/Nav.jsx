@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ReactDOM } from "react-dom/client";
 import { auth, db } from './firebase/init';
-import { collection, addDoc, getDocs, getDoc, doc, query, where } from 'firebase/firestore';
+import { collection, addDoc, getDocs, getDoc, doc, query, where, updateDoc, deleteDoc } from 'firebase/firestore';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, signOut,
@@ -23,18 +23,36 @@ const Nav = () => {
         console.log('post success!')
     }
 
+    async function updatePost() {
+        const hardcodedId = 'OI9KFu57SclWU9FCSayR'
+        const postRef = doc(db, 'posts', hardcodedId)
+        const post = await getPostById(hardcodedId)
+        console.log(post)
+        const updated = {
+            ...post,
+            title: "new hop"
+        }
+        console.log(updated)
+        updateDoc(postRef, updated)
+    }
+
+    function deletePost() {
+        const hardcodedId = 'OI9KFu57SclWU9FCSayR'
+        const postRef = doc(db, 'posts', hardcodedId)
+        deleteDoc(postRef)
+    }
+
     async function getAllPosts() {
         const { docs } = await getDocs(collection(db, 'posts'))
         const posts = docs.map(elem => ({...elem.data(), id: elem.id }))
         console.log(posts)
     }
 
-    async function getPostById() {
-        const hardcodedId = 'OI9KFu57SclWU9FCSayR'
+    async function getPostById(id) {
+        const hardcodedId = id
         const postRef = doc(db, 'posts', hardcodedId)
         const postSnap = await getDoc(postRef)
-        const post = postSnap.data()
-        console.log(post)
+        return postSnap.data()
     }
 
     async function getPostsByUid() {
@@ -43,7 +61,7 @@ const Nav = () => {
             where('uid', "==", user.uid)
         )
         const { docs } = await getDocs(postCollectionRef)
-        console.log(docs)
+        console.log(docs.map(docs => docs.data()))
     }
 
     useEffect(() => { //is actually called many times when re-rendering happens, so its not exactly one time only
@@ -116,6 +134,8 @@ const Nav = () => {
             <button onClick={() => createPost()}>Create Post!</button>
             <button onClick={() => getAllPosts()}>Get All Posts.</button>
             <button onClick={() => getPostById()}>Get Post by Id.</button>
+            <button onClick={() => getPostsByUid()}>Get Post by Uid.</button>
+            <button onClick={() => updatePost()}>Update Post</button>
         </div>
     );
 }
