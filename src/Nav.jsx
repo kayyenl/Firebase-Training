@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ReactDOM } from "react-dom/client";
 import { auth, db } from './firebase/init';
-import { collection, addDoc, getDocs, getDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, getDoc, doc } from 'firebase/firestore';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, signOut,
@@ -23,8 +23,17 @@ const Nav = () => {
     }
 
     async function getAllPosts() {
-        const data = await getDocs(collection(db), 'posts')
+        const { docs } = await getDocs(collection(db, 'posts'))
+        const posts = docs.map(elem => ({...elem.data(), id: elem.id }))
+        console.log(posts)
+    }
 
+    async function getPostById() {
+        const hardcodedId = 'OI9KFu57SclWU9FCSayR'
+        const postRef = doc(db, 'posts', hardcodedId)
+        const postSnap = await getDoc(postRef)
+        const post = postSnap.data()
+        console.log(post)
     }
 
     useEffect(() => { //is actually called many times when re-rendering happens, so its not exactly one time only
@@ -96,6 +105,7 @@ const Nav = () => {
             }
             <button onClick={() => createPost()}>Create Post!</button>
             <button onClick={() => getAllPosts()}>Get All Posts.</button>
+            <button onClick={() => getPostById()}>Get Post by Id.</button>
         </div>
     );
 }
