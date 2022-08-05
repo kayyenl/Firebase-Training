@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ReactDOM } from "react-dom/client";
 import { auth, db } from './firebase/init';
-import { collection, addDoc, getDocs, getDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, getDoc, doc, query, where } from 'firebase/firestore';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, signOut,
@@ -15,8 +15,9 @@ const Nav = () => {
 
     function createPost() {
         const post = {
-            title: "Rich swe jobs out for uni grads",
-            description: "How did some of them earn past $8k a month?",
+            title: "Can you be one of the cs grads earning big?",
+            description: "Find out what it takes to be earning big",
+            uid: user.uid,
         };
         addDoc(collection(db, 'posts'), post)
         console.log('post success!')
@@ -34,6 +35,15 @@ const Nav = () => {
         const postSnap = await getDoc(postRef)
         const post = postSnap.data()
         console.log(post)
+    }
+
+    async function getPostsByUid() {
+        const postCollectionRef = await query(
+            collection(db, 'posts'),
+            where('uid', "==", user.uid)
+        )
+        const { docs } = await getDocs(postCollectionRef)
+        console.log(docs)
     }
 
     useEffect(() => { //is actually called many times when re-rendering happens, so its not exactly one time only
